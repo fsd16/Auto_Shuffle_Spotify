@@ -1,0 +1,7 @@
+services:
+  python-script:
+    build:
+      context: .
+    volumes:
+      - ./spotifyautoshuffle.py:/app/spotifyautoshuffle.py
+    command: ["python3", "spotifyautoshuffle.py"]
