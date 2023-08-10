@@ -3,23 +3,47 @@
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
 import random
+import logging
+
+# Create a custom logger
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
+
+# Create handlers
+c_handler = logging.StreamHandler()
+f_handler = logging.FileHandler('schedule.log')
+# c_handler.setLevel(logging.INFO)
+# f_handler.setLevel(logging.INFO)
+
+# Create formatters and add it to handlers
+c_format = logging.Formatter('%(levelname)s - %(message)s')
+f_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+c_handler.setFormatter(c_format)
+f_handler.setFormatter(f_format)
+
+# Add handlers to the logger
+log.addHandler(c_handler)
+log.addHandler(f_handler)
 
 # Set your Spotify API credentials
 ***REMOVED***
 ***REMOVED***
-redirect_uri = 'http://localhost:8080'  # Redirect URI you specified in the Spotify Developer Dashboard
+redirect_uri = 'http://localhost:8888/callback'  # Redirect URI you specified in the Spotify Developer Dashboard
 
 # Define the required scopes
 scopes = ['playlist-modify-public', 'playlist-modify-private']
 
 # Initialize the Spotify OAuth client
+log.info("Initializng the Spotify API client")
 sp = Spotify(auth_manager=SpotifyOAuth(client_id, client_secret, redirect_uri, scope=scopes))
 
 user_id = sp.me()['id']
 
 # playlists to shuffle
+log.info("Requesting user playlists")
 playlists = sp.current_user_playlists()
 
+log.info("Shuffling user playlists")
 for p in playlists['items']:
     if p['owner']['id'] == user_id:
         # print(f'Name: {p["name"]}, ID: {p["id"]}')
@@ -38,4 +62,6 @@ for p in playlists['items']:
         # Reorder the playlist with shuffled track URIs
         sp.user_playlist_replace_tracks(sp.me()['id'], p["id"], track_uris)
 
-        print(f'{p["name"]} shuffled successfully!')            
+        log.info(f'{p["name"]} shuffled successfully!')
+
+log.info("Shuffling complete!")
