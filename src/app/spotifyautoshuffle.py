@@ -4,6 +4,11 @@ from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
 import random
 import logging
+from pathlib import Path
+
+_dir = Path(__file__).resolve().parent
+
+log_dir = _dir.parent.parent.joinpath('logs', 'schedule.log')
 
 # Create a custom logger
 log = logging.getLogger(__name__)
@@ -11,7 +16,7 @@ log.setLevel(logging.INFO)
 
 # Create handlers
 c_handler = logging.StreamHandler()
-f_handler = logging.FileHandler('schedule.log')
+f_handler = logging.FileHandler(log_dir)
 # c_handler.setLevel(logging.INFO)
 # f_handler.setLevel(logging.INFO)
 
