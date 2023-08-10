@@ -1,1 +1,1 @@
-0 2 * * 0 python /spotifyautoshuffle.py >> /logfile
+0 2 * * 0 python3 src/app/spotifyautoshuffle.py >> /logfile
