@@ -1,10 +1,13 @@
 #https://developer.spotify.com/dashboard/8514735c3caf439490cf06059cd0c269/settings
 
+import logging
+import os
+import random
+from pathlib import Path
+
+from dotenv import load_dotenv
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
-import random
-import logging
-from pathlib import Path
 
 _dir = Path(__file__).resolve().parent
 
@@ -30,10 +33,12 @@ f_handler.setFormatter(f_format)
 log.addHandler(c_handler)
 log.addHandler(f_handler)
 
+load_dotenv()
+
 # Set your Spotify API credentials
-***REMOVED***
-***REMOVED***
-redirect_uri = 'http://localhost:8888/callback'  # Redirect URI you specified in the Spotify Developer Dashboard
+client_id = os.environ.get('SPOTIPY_CLIENT_ID')
+client_secret = os.environ.get('SPOTIPY_CLIENT_SECRET')
+redirect_uri = os.environ.get('SPOTIPY_REDIRECT_URI')  # Redirect URI you specified in the Spotify Developer Dashboard
 
 # Define the required scopes
 scopes = ['playlist-modify-public', 'playlist-modify-private']
