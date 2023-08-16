@@ -7,7 +7,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from spotipy import Spotify
-from spotipy.oauth2 import SpotifyOAuth
+from spotipy.oauth2 import SpotifyOAuth, CacheFileHandler
 
 _dir = Path(__file__).resolve().parent
 
@@ -45,7 +45,7 @@ scopes = ['playlist-modify-public', 'playlist-modify-private']
 
 # Initialize the Spotify OAuth client
 log.info("Initializng the Spotify API client")
-sp = Spotify(auth_manager=SpotifyOAuth(client_id, client_secret, redirect_uri, scope=scopes))
+sp = Spotify(auth_manager=SpotifyOAuth(client_id, client_secret, redirect_uri, scope=scopes, cache_handler=CacheFileHandler(_dir.joinpath('.cache'))))
 
 user_id = sp.me()['id']
 
