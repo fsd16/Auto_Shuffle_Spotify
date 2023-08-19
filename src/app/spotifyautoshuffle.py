@@ -3,11 +3,20 @@
 import logging
 import os
 import random
+import json
 from pathlib import Path
 
 from dotenv import load_dotenv
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth, CacheFileHandler
+
+def get_playlist_tracks(playlist_id, *args, **kwargs):
+    results = sp.playlist_tracks(playlist_id, *args, **kwargs)
+    tracks = results['items']
+    while results['next']:
+        results = sp.next(results)
+        tracks.extend(results['items'])
+    return tracks
 
 _dir = Path(__file__).resolve().parent
 
@@ -51,27 +60,32 @@ user_id = sp.me()['id']
 
 # playlists to shuffle
 log.info("Requesting user playlists")
-playlists = sp.current_user_playlists()
+playlists = sp.current_user_playlists()['items']
 
 log.info("Shuffling user playlists")
-for p in playlists['items']:
-    if p['owner']['id'] == user_id:
-        # print(f'Name: {p["name"]}, ID: {p["id"]}')
+for playlist in playlists:
+    if playlist['owner']['id'] == user_id:
 
         # Retrieve playlist tracks
-        playlist = sp.playlist_tracks(p['id'])
-
-        # # print(json.dumps(playlist, indent=4, sort_keys=True))
+        results = sp.playlist_items(playlist['id'])
+        tracks = results['items']
+        while results['next']:
+            results = sp.next(results)
+            tracks.extend(results['items'])
 
         # Extract the track URIs
-        track_uris = [track['track']['uri'] for track in playlist['items']]
+        track_uris = [track['track']['uri'] for track in tracks]
 
         # Shuffle the track URIs
         random.shuffle(track_uris)
 
-        # Reorder the playlist with shuffled track URIs
-        sp.user_playlist_replace_tracks(sp.me()['id'], p["id"], track_uris)
+        # Replace the playlist items with shuffled items
+        sp.playlist_replace_items(playlist['id'], [])
+        batch_size = 100
+        track_batches = [track_uris[i:i+batch_size] for i in range(0, len(track_uris), batch_size)]
+        for batch in track_batches:
+            sp.playlist_add_items(playlist['id'], batch)
 
-        log.info(f'{p["name"]} shuffled successfully!')
+        log.info(f'{playlist["name"]} shuffled successfully!')
 
 log.info("Shuffling complete!")
