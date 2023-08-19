@@ -6,6 +6,9 @@
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+# zip files
+*.zip
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
