@@ -5,6 +5,7 @@ This script retrieves playlists for a user from their Spotify account, shuffles 
 
 Author: Finn Drabsch
 Date: 19/08/2023
+GitHub: https://github.com/fsd16/Auto_Shuffle_Spotify
 
 Usage:
 1. Ensure you have registered your application on the Spotify Developer Dashboard to obtain client credentials.
@@ -34,7 +35,7 @@ from spotipy import Spotify
 from spotipy.oauth2 import CacheFileHandler, SpotifyOAuth
 
 # Generate the current timestamp
-_timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+_timestamp = datetime.now('NZ').strftime('%Y-%m-%d_%H-%M-%S')
 
 # Get the script directory
 _dir = Path(__file__).resolve().parent
@@ -129,6 +130,6 @@ log.info("Backing up the original playlists")
 bkup_filename_json = Path(f'playlists_{_timestamp}.json')
 bkup_filename_zip = bkup_dir.joinpath(bkup_filename_json.with_suffix('.zip'))
 with ZipFile(bkup_filename_zip, 'w', ZIP_LZMA) as zipf:
-        zipf.writestr(str(bkup_filename_json), dumps(backup, indent=4))
+    zipf.writestr(str(bkup_filename_json), dumps(backup, indent=4))
 
 log.info("Back up complete!")
