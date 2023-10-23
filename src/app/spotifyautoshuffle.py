@@ -35,7 +35,7 @@ from spotipy import Spotify
 from spotipy.oauth2 import CacheFileHandler, SpotifyOAuth
 
 # Generate the current timestamp
-_timestamp = datetime.now('NZ').strftime('%Y-%m-%d_%H-%M-%S')
+_timestamp = datetime.now().astimezone().isoformat(timespec='seconds')
 
 # Get the script directory
 _dir = Path(__file__).resolve().parent
